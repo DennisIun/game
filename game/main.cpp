@@ -17,16 +17,16 @@ char board[MAX_BOARD_ROW][MAX_BOARD_COL] = {{'1','2','3'}, {'4','5','6'},{'7','8
  Funcition: display_board()
  Description: Display the tac-toc-tao board which is stored in global variable char board[3][3];
  */
-int display_board(void){
-    for (int x = 0; x < MAX_BOARD_ROW; x++){
+int display_board(char board[][MAX_BOARD_COL], int max_board_row, int max_board_col){
+    for (int x = 0; x < max_board_row; x++){
         cout << " ";
-        for (int y = 0; y < MAX_BOARD_COL; y++){
+        for (int y = 0; y < max_board_col; y++){
             cout << board [x][y];
-            if (y != (MAX_BOARD_COL-1)) {    // Don't need to print for the last column
+            if (y != (max_board_col-1)) {    // Don't need to print for the last column
                 cout << " | ";
             }
         }
-        if ((x != (MAX_BOARD_ROW-1))){      // Don't need to print for the last row
+        if ((x != (max_board_row-1))){      // Don't need to print for the last row
             cout << endl << "---|---|---" << endl;
         }
     }
@@ -37,6 +37,6 @@ int display_board(void){
 int main(int argc, const char * argv[]) {
     // insert code here...
     cout << "Hello, World!\n";
-    display_board();
+    display_board(board, MAX_BOARD_ROW, MAX_BOARD_COL);
     return 0;
 }
