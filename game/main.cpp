@@ -109,10 +109,33 @@ int computer_select_a_box(char board[][MAX_BOARD_COL], const char display_char){
     0 - Noone wins
  */
 int check_who_wins(const char board[][MAX_BOARD_COL], char& who_win){
-    return 0;
     
-//    who_win = 'X';
-//    return 1;
+    // Check the rows for same symbols
+    for (int row = 0; row < MAX_BOARD_ROW; row++){
+        if ((board[row][0] == board[row][1]) && (board[row][1] == board[row][2])){
+            who_win = board[row][0];
+            return 1;
+        }
+    }
+    // Check the colomns for same symbols
+    for (int column = 0; column < MAX_BOARD_COL; column++){
+        if ((board[0][column] == board[1][column]) && (board[1][column] == board[2][column])){
+            who_win = board[0][column];
+            return 1;
+        }
+    }
+    // Check the diagonal blocks
+    if ((board[0][0] == board[1][1]) && (board[1][1] == board[2][2])){
+        who_win = board[1][1];
+        return 1;
+    }
+
+    if ((board[0][2] == board[1][1]) && (board[1][1] == board[2][0])){
+        who_win = board[1][1];
+        return 1;
+    }
+
+    return 0; // noone wins
 }
 
 int main(int argc, const char * argv[]) {
