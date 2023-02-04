@@ -50,9 +50,21 @@ int display_board(const char board[][MAX_BOARD_COL]){
  */
 int update_board_with_input(char board[][MAX_BOARD_COL], const int input_box, const char display_char){
     // Step 1: check if input_box is between 1 and 9
+    if ((input_box < 1) || (input_box > MAX_BOARD_ROW * MAX_BOARD_COL)){
+        //out of range
+        return 0;
+    }
     // Step 2: check if input_box is taken by 'X' or 'O'
-    // Step 3: if not taken, update with display_char
-    // return 0 if there is any error
+    int x = (input_box - 1) / MAX_BOARD_COL;
+    int y = (input_box - 1) % MAX_BOARD_COL;
+    if ((board[x][y] == 'X') || (board[x][y] == 'O')){
+        // box taken
+        return 0;
+    } else {
+        // Step 3: if not taken, update with display_char
+        board[x][y] = display_char;
+        return 1;
+    }
     return 0;
 }
 
@@ -67,7 +79,22 @@ int update_board_with_input(char board[][MAX_BOARD_COL], const int input_box, co
     0 - Something failed
  */
 int computer_select_a_box(char board[][MAX_BOARD_COL], const char display_char){
-    return 1;
+    // Just randomnly select a box
+    do {
+        int box_selected = rand() % (MAX_BOARD_ROW*MAX_BOARD_COL);
+        int x = (box_selected) / MAX_BOARD_COL;
+        int y = (box_selected) % MAX_BOARD_COL;
+        if ((board[x][y] == 'X') || (board[x][y] == 'O')){
+            // box taken
+            continue; // select another box
+        } else {
+            // if not taken, update with display_char
+            board[x][y] = display_char;
+            return 1;
+        }
+    } while (1); // infinite loop
+    
+    return 0;
 }
 
 /*
@@ -82,8 +109,10 @@ int computer_select_a_box(char board[][MAX_BOARD_COL], const char display_char){
     0 - Noone wins
  */
 int check_who_wins(const char board[][MAX_BOARD_COL], char& who_win){
-    who_win = 'X';
-    return 1;
+    return 0;
+    
+//    who_win = 'X';
+//    return 1;
 }
 
 int main(int argc, const char * argv[]) {
@@ -92,6 +121,8 @@ int main(int argc, const char * argv[]) {
     char wins = '?'; // Who wins
     int number_of_box_selected = 0;
     int whos_turn = USER_TURN;
+    
+    srand((unsigned)time(NULL)); // Seed the randomn number generator first
     
     cout << "Hello. Welcome to Tic Tok Tod. \n You are X and I am O \n You go first \n";
     display_board(board);
@@ -126,5 +157,6 @@ int main(int argc, const char * argv[]) {
     if (wins == '?'){
         cout << "It is a tie. \n";
     }
+    cout << "Program exiting. \n";
     return 0;
 }
