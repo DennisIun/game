@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -40,11 +41,28 @@ int display_board(const vector<int> board, const int numA, const int numB){
     1 - Successful
     0 - Failure
  */
-int update_board_with_input(vector<int> board, const int input_box, int *numA, int *numB){
+int update_board_with_input(vector<int> board, const int input_box, int *numA_ptr, int *numB_ptr){
     // Step 1: check if input_box is within range
-    
+    if ((input_box < 0) || (input_box >= pow(10, MAX_NUM_DIGITS))){
+        // Input_box value is out of range, return Failure
+        return 0;
+    }
     // Step 2: Calculate and update A & B values then update the value via the pointers
-    
+    int temp_value = input_box;
+    // initialize numA & numB to 0
+    *numA_ptr = 0;
+    *numB_ptr = 0;
+    for (int i = MAX_NUM_DIGITS-1; i >= 0; i--){    // start checking from the last digit (right) to the first digit (left)
+        int temp_digit = temp_value % 10; // temp_digit stored the last digit
+        temp_value = temp_value / 10; // shift one digit to the right
+        if (temp_digit == board[i]){
+            (*numA_ptr)++;
+            continue; // If the digit is correctly guess, then check the next digit
+        }
+        if (count(board.begin(), board.end(), temp_digit) > 0){
+            (*numB_ptr)++;
+        }
+    }
     return 1;
 }
 
@@ -82,14 +100,24 @@ int check_who_wins(const vector<int> board, int numA, int numB, char& who_win){
     }
 }
 
-int initialize_game(vector<int> board){
+int initialize_game(vector<int> *board_ptr){
     
     srand((unsigned)time(NULL)); // Seed the randomn number generator first
     
     
     for (int i = 0; i < MAX_NUM_DIGITS; i++){
-        int answer_digit = rand() % 9;
-        board.push_back(answer_digit);
+        do {
+            int answer_digit = rand() % 9;
+            // Need to ensure the generated number does not have repeated digits. Checking if the answer_digit exist in the vector already below
+            if (count((*board_ptr).begin(), (*board_ptr).end(), answer_digit) == 0){
+                // answer_digit does not exist in the vector
+                (*board_ptr).push_back(answer_digit);
+                break;
+            } else {
+                // answer_digit already existed in the vector
+                continue;
+            }
+        } while (1);
     }
     
     return 1;
@@ -111,7 +139,7 @@ int main(int argc, const char * argv[]) {
     int number_of_box_selected = 0;
     int whos_turn = USER_TURN;
 
-    initialize_game(board);
+    initialize_game(&board);
     
     cout << "Hello. Welcome to number guessing. \n Please guess a " << MAX_NUM_DIGITS << " numbers. \n";
 //    display_board(board);
